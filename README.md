@@ -18,24 +18,42 @@ Once you are on the Remix website, create a new file by clicking on the "+" icon
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract AssertionExample {
+contract MyContract {
+    address public owner;
     uint256 public value;
 
-    function updateValue(uint256 _newValue) external {
-        // Require statement
-        require(_newValue != 0, "New value must not be zero");
-        
-        // Assert statement
-        assert(_newValue != 100);
-        
-        // Revert statement
-        if (_newValue == 50) {
-            revert("New value cannot be 50");
-        }
-        
+    constructor() {
+        owner = msg.sender;
+    }
+
+    function setValue(uint256 _newValue) external {
+        // Require that the caller of this function is the owner
+        require(msg.sender == owner, "Caller is not the owner");
+
+        // Ensure that the new value is not zero
+        require(_newValue != 0, "Value cannot be zero");
+
+        // Ensure that the new value is greater than the current value
+        require(_newValue > value, "New value must be greater than current value");
+
+        // Update the value
         value = _newValue;
     }
+
+    function assertExample(uint256 _x, uint256 _y) external pure returns (uint256) {
+        // Ensure that _x is less than _y, otherwise trigger an assertion error
+        assert(_x < _y);
+
+        // Return the result of _y - _x
+        return _y - _x;
+    }
+
+    function revertExample() external pure {
+        // Revert the transaction with a custom error message
+        revert("This transaction is reverted");
+    }
 }
+
 
 
 ```
