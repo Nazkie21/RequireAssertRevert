@@ -1,38 +1,27 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-contract MyContract {
-    address public owner;
-    uint256 public value;
+contract GuessingGame {
+  uint public answer = 42; // The secret answer
+  uint public attempts = 0; // Number of guesses made
 
-    constructor() {
-        owner = msg.sender;
+  // Function for players to guess the answer
+  function guess(uint _guess) public {
+    attempts++;
+
+    // Require valid guess range (1-100)
+    require(_guess >= 1 && _guess <= 100, "Guess must be between 1 and 100");
+
+    // Check guess
+    if (_guess == answer) {
+      // Player wins!
+      // (Assuming reward logic is implemented elsewhere)
+    } else {
+      // Assert for unexpected internal error (should never happen)
+      assert(attempts <= 10);
+
+      // Revert transaction with a message
+      revert("Incorrect guess. Try again!");
     }
-
-    function setValue(uint256 _newValue) external {
-        // Require that the caller of this function is the owner
-        require(msg.sender == owner, "Caller is not the owner");
-
-        // Ensure that the new value is not zero
-        require(_newValue != 0, "Value cannot be zero");
-
-        // Ensure that the new value is greater than the current value
-        require(_newValue > value, "New value must be greater than current value");
-
-        // Update the value
-        value = _newValue;
-    }
-
-    function assertExample(uint256 _x, uint256 _y) external pure returns (uint256) {
-        // Ensure that _x is less than _y, otherwise trigger an assertion error
-        assert(_x < _y);
-
-        // Return the result of _y - _x
-        return _y - _x;
-    }
-
-    function revertExample() external pure {
-        // Revert the transaction with a custom error message
-        revert("This transaction is reverted");
-    }
+  }
 }
